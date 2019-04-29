@@ -163,16 +163,22 @@ class email(RSA, threading.Thread):
                 msg = self.decrypt(conn.recv(4096).decode(encoding='utf-8', errors='strict'))
                 print(msg)
 
-    def run(self):
-        for n in range (2):
-            if n:
-                self.recv()
-            else:
+    def runs(self, send = (input("Send a message? (1 for yes, 0 for no"))):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as c:
+            c.bind(('0.0.0.0', 12678))
+            c.listen()
+            conn, addr = c.accept()
+            with conn:
+                msg_number = int((conn.recv(4096)).decode(encoding='utf-8', errors='strict'))
+            c.close()
+        for n in range (msg_number):
+            self.recv()
+        c.close()
+        try:
+            if int(send):
                 self.send()
+        except ValueError:
+            print("Thank you for using email.ru")
 
-
-
-
-
-
-
+thread1 = email()
+t = threading.Thread(target=email.runs)
