@@ -42,7 +42,6 @@ class RSA:                                                                      
                 self.numlist2.append(icounter)  # appends number
         self.e = self.numlist2[random.randint(0,len(self.numlist2))]
 
-        #self.d = self.e*(random.randint(10,20)) #generates a random value for d, to be found valid or manipulated until it is
         self.d = MMI(self.e, self.totient) # implementation of lambda pasted outside the class
 
         self.encryptkey = (self.e, self.n) # generates tuple to act as lock
@@ -59,7 +58,7 @@ class RSA:                                                                      
         encrypted = []
         for letter in message:
             encrypted.append((ord(letter))**k1%k2)
-        return str(' '.join(n for n in encrypted))
+        return str(' '.join(str(n) for n in encrypted))
 
 
 
@@ -68,9 +67,9 @@ class RSA:                                                                      
         :param emessage: This is an encrypted message, encrypted by the respective method in this very class or the staticmethod 'send'
         :return: The decrypted emessage as a string using the keys for the instance of conversation
         '''
-        ' '.split(emessage)
+        emessage = emessage.split()
         decrypted = [] #creates an empty list
-        for n in emessage:
+        for n in (emessage):
             decrypted.append((int(n)**(self.decryptkey[0]))%(self.decryptkey[1])) #Decrypts ASCII value (decrypted) to list
         decrypted = "".join(str(chr(n)) for n in decrypted) #creates string from list of decrypted values and turns each ASCII to a character
         return decrypted
@@ -130,3 +129,8 @@ class RSA:                                                                      
                     sender.send(bytes((str(((ord(n)) ** key0) % key1)), encoding='utf-8')) #sends each letter of message with delay
                     time.sleep(0.05)
                 sender.close()
+
+a = RSA()
+b = (a.encrypt(a.encryptkey[0], a.encryptkey[1], "Hello"))
+print (b)
+print (a.decrypt(b))
